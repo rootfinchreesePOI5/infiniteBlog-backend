@@ -17,7 +17,11 @@ connectDb()
 connectCloudinary()
 //middlewares
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: "*",  // Allows requests from any device
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+  }));
 //apiEndpoints
 app.use('/api/user/', userRoutes)
 app.use('/api/admin/', adminRoutes)
