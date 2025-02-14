@@ -18,10 +18,11 @@ connectCloudinary()
 //middlewares
 app.use(express.json())
 app.use(cors({
-    origin: "*",  // Allows requests from any device
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization"
-  }));
+  origin: ["https://infinite-blog.vercel.app"], // Allow frontend domain
+  methods: "GET, POST, PUT, DELETE",
+  allowedHeaders: ["Content-Type", "Authorization", "token"], // Explicitly allow 'token' header
+}));
+
 //apiEndpoints
 app.use('/api/user/', userRoutes)
 app.use('/api/admin/', adminRoutes)
