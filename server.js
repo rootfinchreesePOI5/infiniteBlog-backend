@@ -17,8 +17,9 @@ connectDb()
 connectCloudinary()
 //middlewares
 app.use(express.json())
+
 app.use(cors({
-  origin: ["https://infinite-blog.vercel.app"], // Allow frontend domain
+  origin:"*", // Allow frontend domain
   methods: "GET, POST, PUT, DELETE",
   allowedHeaders: ["Content-Type", "Authorization", "token"], // Explicitly allow 'token' header
 }));
