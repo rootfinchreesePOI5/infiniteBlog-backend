@@ -101,6 +101,7 @@ const LoginUser = async (req, res) => {
   }
 };
 
+
 const removeAccount = async (req, res) => {
   try {
     // Logic for unfollowing a user
