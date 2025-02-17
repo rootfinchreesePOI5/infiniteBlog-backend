@@ -23,11 +23,11 @@ const blogSchema = new mongoose.Schema({
     required: true,
   },
   publishedAt: {
-    type: new Date(),
+    type: String,
     default: '',
   },
   url: {
-    type: Number,
+    type: String,
     default: '',
   },
 });

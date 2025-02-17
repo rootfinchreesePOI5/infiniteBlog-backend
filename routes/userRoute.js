@@ -10,9 +10,9 @@ userRoutes.post("/register", upload.single("image"), RegisterUser); //register a
 userRoutes.get('/profile', authUser , getProfile)
 userRoutes.post("/remove-login", authUser, removeAccount); //remove my account
 userRoutes.post("/update-profile",upload.single("image"),authUser,updateProfile ); //update my profile
-userRoutes.post("/add-posts", upload.single("image"), authUser, addPost); //add a post
+userRoutes.post("/add-post", upload.single("image"), authUser, addPost); //add a post
 userRoutes.post("/all-posts", GetAllPosts); //see all users post except their credentials
-userRoutes.post("/my-posts", MyPosts); //see ur posts
+userRoutes.get("/my-posts", authUser, MyPosts); //see ur posts
 userRoutes.post("/update-posts", upload.single("image"), authUser, updatePost); //update my posts
 userRoutes.post("/remove-posts", removePost); //remove my posts
 userRoutes.post("/save-post", savePost); //save your post and other posts

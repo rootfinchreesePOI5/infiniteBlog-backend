@@ -3,6 +3,7 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import userModel from "../models/UserModel.js";
+import blogModel from "../models/BlogModel.js";
 // Register a new user
 const RegisterUser = async (req, res) => {
   try {
@@ -101,7 +102,6 @@ const LoginUser = async (req, res) => {
   }
 };
 
-
 const removeAccount = async (req, res) => {
   try {
     // Logic for unfollowing a user
@@ -157,11 +157,50 @@ const updateProfile = async (req, res) => {
 // Add a new post
 const addPost = async (req, res) => {
   try {
-    // Logic for creating a new post
+    const { title, description, content, source, publishedAt, url } = req.body;
+    const image = req.file; // Get the uploaded file from the request
+
+    // Validate required fields
+    if (!title || !description || !content || !source) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    if (!image) {
+      return res.status(400).json({ success: false, message: "Image is required" });
+    }
+
+    // Upload image to Cloudinary
+    const uploadedImage = await cloudinary.uploader.upload(image.path, {
+      resource_type: "image", // Specify the resource type as 'image'
+    });
+
+    // Get the secure URL of the uploaded image
+    const imageUrl = uploadedImage.secure_url;
+
+    // Create a new blog post with the Cloudinary image URL
+    const newPost = new blogModel({
+      image: imageUrl, // Use the Cloudinary URL here
+      title,
+      description,
+      content,
+      source,
+      publishedAt,
+      url,
+    });
+
+    // Save to the database
+    await newPost.save();
+
+    res.status(201).json({ success: true, message: "Post added successfully", post: newPost });
   } catch (error) {
-    // Handle errors related to adding a post
+    console.error("Error adding post:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+export default addPost;
+
+
 
 // Get all posts
 const GetAllPosts = async (req, res) => {
@@ -172,12 +211,14 @@ const GetAllPosts = async (req, res) => {
   }
 };
 
-// Get posts created by the logged-in user
+// Get user posts
 const MyPosts = async (req, res) => {
   try {
-    // Fetch posts specific to the logged-in user
+      const userPosts = await blogModel.find({ source: req.user.username }); // Filter by user
+      res.status(200).json({ success: true, posts: userPosts });
   } catch (error) {
-    // Handle errors related to fetching user's posts
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ success: false, message: "Failed to fetch posts" });
   }
 };
 
